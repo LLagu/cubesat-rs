@@ -1,5 +1,7 @@
 # cubesat-rs
 
+<img src="logo/logo.png " width="300" style="display: block; margin: auto;">
+
 The goal of this personal project is developing a demonstrable embedded system simulating a key satellite subsystem (power management), running on an nRF52840 DK, communicating with a Rust-based command-line ground station application via CCSDS-compliant radio messages.
 The focus is on the software side of things, not simulation accuracy.
 
