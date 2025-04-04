@@ -1,0 +1,23 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "preLaunchTask": "${defaultBuildTask}",
+        "type": "probe-rs-debug",
+        "request": "launch",
+        "name": "Run with probe-rs",
+        "allowEraseAll": true,
+        "flashingConfig": {
+          "flashingEnabled": true,
+        },
+        "chip": "nRF52840_xxAA",
+        "coreConfigs": [
+          {
+            "programBinary": "${workspaceFolder}/target/thumbv7em-none-eabihf/debug/cubesat",
+            "rttEnabled": true
+          }
+        ],
+        
+      }
+    ]
+  }

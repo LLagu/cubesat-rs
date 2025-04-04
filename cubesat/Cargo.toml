@@ -1,0 +1,25 @@
+[package]
+authors = ["Lagunas Luca <lagunasluca@protonmail.com>"]
+edition = "2018"
+readme = "README.md"
+name = "cubesat"
+version = "0.1.0"
+
+[dependencies]
+cortex-m = { version = "0.7.6", features = ["critical-section-single-core"] }
+cortex-m-rt = "0.7"
+cortex-m-semihosting = "0.5"
+panic-halt = "1.0.0"
+defmt = { version = "1.0.1" }
+rtt-target = { version = "0.6", features = ["defmt"] }
+
+# this lets you use `cargo fix`!
+[[bin]]
+name = "cubesat"
+test = false
+bench = false
+
+[profile.release]
+codegen-units = 1 # better optimizations
+debug = true # symbols are nice and they don't increase the size on Flash
+lto = true # better optimizations
