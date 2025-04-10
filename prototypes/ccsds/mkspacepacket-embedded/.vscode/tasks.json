@@ -1,0 +1,22 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Cargo Build (debug)",
+            "type": "process",
+            "command": "cargo",
+            "args": [
+                "build",
+                "--target",
+                "thumbv7em-none-eabihf"
+            ],
+            "problemMatcher": [
+                "$rustc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        }
+    ]
+}

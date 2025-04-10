@@ -1,0 +1,13 @@
+[package]
+name = "mkspacepacket-embedded"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+cortex-m = { version = "0.7.6", features = ["critical-section-single-core"] }
+cortex-m-rt = "0.7"
+cortex-m-semihosting = "0.5"
+panic-halt = "1.0.0"
+defmt = { version = "1.0.1" }
+rtt-target = { version = "0.6", features = ["defmt"] }
+spacepacket = "0.1.1"

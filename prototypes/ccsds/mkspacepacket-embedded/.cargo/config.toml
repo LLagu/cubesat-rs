@@ -1,0 +1,6 @@
+[target.thumbv7m-none-eabi]
+
+[target.'cfg(all(target_arch = "arm", target_os = "none"))']
+
+[build]
+target = "thumbv7em-none-eabihf"     # Cortex-M4F and Cortex-M7F (with FPU)
