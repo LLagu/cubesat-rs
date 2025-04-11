@@ -1,6 +1,6 @@
 [package]
 authors = ["Lagunas Luca <lagunasluca@protonmail.com>"]
-edition = "2018"
+edition = "2024"
 readme = "README.md"
 name = "cubesat"
 version = "0.1.0"
@@ -12,6 +12,7 @@ cortex-m-semihosting = "0.5"
 panic-halt = "1.0.0"
 defmt = { version = "1.0.1" }
 rtt-target = { version = "0.6", features = ["defmt"] }
+spacepackets = { version = "0.13.1", default-features = false }
 
 # this lets you use `cargo fix`!
 [[bin]]
