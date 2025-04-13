@@ -9,10 +9,13 @@ version = "0.1.0"
 cortex-m = { version = "0.7.6", features = ["critical-section-single-core"] }
 cortex-m-rt = "0.7"
 cortex-m-semihosting = "0.5"
+embedded-hal = "1.0.0"
+nrf52840-hal = "0.18.0"
 panic-halt = "1.0.0"
 defmt = { version = "1.0.1" }
 rtt-target = { version = "0.6", features = ["defmt"] }
 spacepackets = { version = "0.13.1", default-features = false }
+grounded = "0.2.0"
 
 # this lets you use `cargo fix`!
 [[bin]]
