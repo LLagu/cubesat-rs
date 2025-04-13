@@ -26,7 +26,9 @@ fn main() -> ! {
     // radio.mode.write(|w| w.mode().ieee802154_250kbit());
     // radio.txpower.write(|w| w.txpower().pos8d_bm());
     let mut radio = radio_setup::init(p.RADIO, p.CLOCK).unwrap();
-
+    radio.set_channel(nrf52840_hal::ieee802154::Channel::_20);
+    radio.set_txpower(nrf52840_hal::ieee802154::TxPower::Pos8dBm);
+    
     rprintln!("Starting cubesat telemetry routine...");
     let voltage_mock: f64 = 42.0;
     let mut tm_buffer: [u8; 40] = [0; 40];
