@@ -1,0 +1,16 @@
+[package]
+authors = ["Lagunas Luca <lagunasluca@protonmail.com>"]
+edition = "2024"
+name = "groundstation"
+version = "0.1.0"
+
+[dependencies]
+color-eyre = "0.6"
+ctrlc = "3.4"
+hidapi = "2.4"
+rusb = "0.9"
+consts = { path = "consts" }
+serialport = "4.2"
+egui = "0.31.1"
+eframe = "0.31.1"
+crossbeam-channel = "0.5.15"

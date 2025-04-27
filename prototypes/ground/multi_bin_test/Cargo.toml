@@ -1,0 +1,20 @@
+[package]
+name = "multi_bin_test"
+version = "0.1.0"
+edition = "2024"
+
+[[bin]]
+name = "app1"
+path = "src/bin/app1.rs"
+
+[[bin]]
+name = "app2"
+path = "src/bin/app2.rs"
+
+[[bin]]
+name = "app3"
+path = "src/bin/app3.rs"
+
+
+[dependencies]
+exec = "0.3.1"
