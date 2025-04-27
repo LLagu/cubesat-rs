@@ -1,6 +1,4 @@
-//! Firmware for the nRF52840 Dongle, for echoing packets in loopback mode
-//!
-//! Sets up a USB Serial port and listens for radio packets.
+// Sets up a USB Serial port and listens for radio packets.
 
 #![no_main]
 #![no_std]
@@ -308,12 +306,7 @@ mod app {
             {
                 Ok(crc) => {
                     ctx.local.leds.ld1.toggle();
-                    defmt::info!(
-                        "Received {=u8} bytes (CRC=0x{=u16:04x}, LQI={})",
-                        ctx.local.packet.len(),
-                        crc,
-                        ctx.local.packet.lqi(),
-                    );
+      
                     let _ = writeln!(
                         writer,
                         "\nReceived {} bytes (CRC=0x{:04x}, LQI={})",
@@ -321,14 +314,13 @@ mod app {
                         crc,
                         ctx.local.packet.lqi(),
                     );
+                    let packet_slice: &[u8] = &*ctx.local.packet;
+                    let _ = writeln!(
+                        writer,
+                        "Packet Content: {:?}", // Standard Debug formatter for uppercase hex
+                        packet_slice
+                    );
                     *ctx.local.rx_count += 1;
-                    // reverse the bytes, so olleh -> hello
-                    ctx.local.packet.reverse();
-                    // send packet after 5ms (we know the client waits for 10ms and
-                    // we want to ensure they are definitely in receive mode by the
-                    // time we send this reply)
-                    ctx.local.timer.delay(5000);
-                    ctx.local.radio.send(ctx.local.packet);
                 }
                 Err(dongle::ieee802154::Error::Crc(_)) => {
                     defmt::debug!("RX fail!");
