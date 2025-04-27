@@ -1,0 +1,21 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+      {
+          "type": "lldb",
+          "request": "launch",
+          "name": "Cargo Build (thumbv7em-none-eabihf)",
+          "cargo": {
+              "args": [
+                  "build",
+                  "--target",
+                  "thumbv7em-none-eabihf"
+              ]
+          },
+          "program": "${workspaceFolder}/target/thumbv7em-none-eabihf/debug/dongle-fw",
+          "args": [],
+          "cwd": "${workspaceFolder}",
+          "preLaunchTask": "rust: cargo build --target thumbv7em-none-eabihf"
+      }
+  ]
+}
