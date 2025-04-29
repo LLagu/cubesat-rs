@@ -1,20 +1,15 @@
 use std::env;
 use std::process::{Command, exit};
-use std::path::PathBuf;
-#[cfg(unix)] // Only compile the exec part on Unix-like systems
+#[cfg(unix)]
 use exec::Command as ExecCommand;
 
 
 fn main() {
-    // --- Configuration ---
     let script_name = "launch_tmux.sh";
-    let tmux_session_name = "multi_rust_apps";
-    // --- End Configuration ---
-
+    let tmux_session_name = "multi_rust_apps_panes";
     println!("Launcher started...");
 
-    // 1. Find the launch script relative to the executable.
-    // Assumes the script is in the project root, and the executable is in target/debug/ or target/release/
+    // Find the launch script
     let current_exe = match env::current_exe() {
         Ok(exe) => exe,
         Err(e) => {
@@ -47,12 +42,10 @@ fn main() {
 
     println!("Found launch script: {}", script_path.display());
 
-    // 2. Execute the launch script using bash.
+
     println!("Executing launch script...");
     let mut cmd = Command::new("bash");
     cmd.arg(&script_path);
-    // Run script from project root context if needed (usually not necessary if script handles paths well)
-    // cmd.current_dir(project_root);
 
     let script_status = match cmd.status() {
         Ok(status) => status,
@@ -70,8 +63,7 @@ fn main() {
 
     println!("Launch script completed successfully.");
 
-    // 3. Attach to the tmux session using exec (Unix-like systems only).
-    // The 'exec' call replaces the current process (the launcher) with tmux.
+    //Attach to the tmux session 
     #[cfg(unix)]
     {
         println!("Attaching to tmux session '{}'...", tmux_session_name);
@@ -81,16 +73,5 @@ fn main() {
         // If exec returns, it's an error
         eprintln!("Error trying to exec into tmux: {}", err);
         exit(1);
-    }
-
-    // If not on Unix, exec is not available. Print a message.
-    #[cfg(not(unix))]
-    {
-         println!("-----------------------------------------------------");
-         println!("Automatic attachment via 'exec' is only supported on Unix-like systems (Linux, macOS).");
-         println!("Please attach manually using:");
-         println!("  tmux attach-session -t {}", tmux_session_name);
-         println!("-----------------------------------------------------");
-         exit(0); // Exit successfully, as the script ran.
     }
 }
