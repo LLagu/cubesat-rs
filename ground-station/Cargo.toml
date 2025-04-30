@@ -11,6 +11,3 @@ hidapi = "2.4"
 rusb = "0.9"
 consts = { path = "consts" }
 serialport = "4.2"
-egui = "0.31.1"
-eframe = "0.31.1"
-crossbeam-channel = "0.5.15"

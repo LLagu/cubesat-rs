@@ -82,56 +82,6 @@ pub fn serial_term() -> color_eyre::Result<()> {
     Ok(())
 }
 
-pub fn serial_term_mod() -> color_eyre::Result<()> {
-    let mut once = true;
-    let dongle = loop {
-        if let Some(dongle) = serialport::available_ports()?
-            .into_iter()
-            .filter(|info| match &info.port_type {
-                SerialPortType::UsbPort(usb) => usb.vid == consts::USB_VID_DEMO,
-                _ => false,
-            })
-            .next()
-        {
-            break dongle;
-        } else if once {
-            once = false;
-
-            eprintln!("(waiting for the Dongle to be connected)");
-        }
-    };
-
-    let mut port = serialport::new(&dongle.port_name, 115200).open()?;
-    port.set_timeout(Duration::from_millis(10))?;
-
-    static CONTINUE: AtomicBool = AtomicBool::new(true);
-
-    // properly close the serial device on Ctrl-C
-    ctrlc::set_handler(|| CONTINUE.store(false, Ordering::Relaxed))?;
-
-    let stdout = io::stdout();
-    while CONTINUE.load(Ordering::Relaxed) {
-        let mut read_buf = [0u8; 8];
-        match port.read(&mut read_buf) {
-            Ok(n) => {
-                let mut stdout = stdout.lock();
-                stdout.write_all(&read_buf[..n])?;
-                stdout.flush()?;        
-            }
-            Err(e) if e.kind() == std::io::ErrorKind::TimedOut => {
-                // Go around
-            }
-            Err(e) => {
-                println!("Error: {:?}", e);
-                break;
-            }
-        }
-    }
-
-    eprintln!("(closing the serial port)");
-    Ok(())
-}
-
 pub fn usb_list() -> color_eyre::Result<()> {
     for dev in rusb::devices()?.iter() {
         let desc = dev.device_descriptor()?;
