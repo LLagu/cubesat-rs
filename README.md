@@ -13,17 +13,34 @@ There are three separate sub-projects:
 - The ground station software
 
 
-### Plan
-##### CubeSat EPS "simulator" with CCSDS-Compliant Telemetry
+## Project status
+### CubeSat EPS "simulator" with CCSDS-Compliant Telemetry
+##### Fully completed
 - [X] Setup project and embedded Rust dev environment
-- [ ] Investigate and prototype a simplified CubeSat EPS - Electrical Power System
-- [ ] Test and pick `ccsds` or `spacepackets` for data transmission
-- [ ] Modify or rewrite nRF52840 Dongle's firmware
-- [ ] Test basic data transmission and reception
+  - [X] Projects structure
+  - [X] Launch and debugging scripts 
+- [X] Test and pick `ccsds` or `spacepackets` for data transmission
 
-##### Ground station software 
+##### In progress
+- [ ] Investigate and prototype a simplified CubeSat EPS - Electrical Power System
+  - [X] Send mock voltage data
+  - [ ] Create EPS module  
+- [ ] Test basic data transmission and reception
+  - [X] Telemetry send and receive (TM, downlink)
+  - [ ] Telecommand send and receive (TC, uplink)   
+
+##### TODO
+- [ ] Modify nRF52840 Dongle's firmware
+
+### Ground station software 
+##### Fully completed
+- [X] Testing visualization libraries
+  - [X] Visualize the satellite's orbit with `kiss3d`
+  - [X] Visualize telemetry with `plotters`
+
+##### In progress
+- [ ] Integrate Dongle
+
+##### TODO
 - [ ] Study and implement TLE parsing and propagation (`sgp4`)
 - [ ] Implement basic attitude representation and control
-- [ ] Visualize the satellite's orbit with `kiss3d`
-- [ ] Visualize telemetry with `plotters`
-- [ ] Integrate Dongle
