@@ -4,13 +4,12 @@
 </p>
 
 
-The goal of this personal project is developing a demonstrable embedded system simulating a key satellite subsystem (power management), running on an nRF52840 DK, communicating with a Rust-based command-line ground station application via CCSDS-compliant radio messages.
+The goal of this personal project is developing a demonstrable embedded system simulating a key satellite subsystem (power management), running on an nRF52840 DK, communicating with a Rust-based ground station application via CCSDS-compliant radio messages.
 The focus is on the software side of things, not simulation accuracy.
 
-There are three separate sub-projects:
+There are two separate sub-projects:
 - The embedded software for the nRF52840 DK
-- The firmware for the nRF52840 USB Dongle
-- The ground station software
+- The firmware for the nRF52840 USB Dongle (the "ground station software")
 
 
 ## Project status
