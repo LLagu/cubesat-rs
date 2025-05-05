@@ -20,7 +20,7 @@ fn main() -> Result<()> {
         }
         "usb" => {
             println!("Running USB list...");
-            tasks::usb_list()
+            tasks::send_command_test_loop()
         }
         _ => {
             eprintln!("Unknown command: {}", args[1]);

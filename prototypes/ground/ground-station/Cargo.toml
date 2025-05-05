@@ -11,3 +11,4 @@ hidapi = "2.4"
 rusb = "0.9"
 consts = { path = "consts" }
 serialport = "4.2"
+heapless = "0.8"

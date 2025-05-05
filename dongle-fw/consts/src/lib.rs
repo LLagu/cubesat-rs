@@ -11,3 +11,5 @@ pub const USB_PID_DONGLE_LOOPBACK: u16 = 0x0309;
 
 /// USB PID for the Dongle in Puzzle mode
 pub const USB_PID_DONGLE_PUZZLE: u16 = 0x0310;
+
+pub const CMD_SEND_RADIO: u8 = 0x53;
