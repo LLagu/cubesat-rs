@@ -1,19 +1,15 @@
-// Sets up a USB Serial port and listens for radio packets.
-
 #![no_main]
 #![no_std]
 
 use defmt_rtt as _;
-use heapless::Vec;
 
 #[rtic::app(device = dongle, peripherals = false)]
 mod app {
     use core::mem::MaybeUninit;
+    use dongle::ieee802154::Packet;
     use rtic_monotonics::systick::prelude::*;
     const QUEUE_LEN: usize = 8;
-    const MAX_RADIO_PAYLOAD: usize = 60;
-    const CMD_CHANGE_CHANNEL_MIN: u8 = 11;
-    const CMD_CHANGE_CHANNEL_MAX: u8 = 26;
+
     systick_monotonic!(Mono, 100);
 
     /// An adapter that lets us writeln! into any closure that takes a byte.
@@ -58,11 +54,10 @@ mod app {
         usb_device: usb_device::device::UsbDevice<'static, dongle::UsbBus>,
     }
 
-    #[derive(Debug, defmt::Format, Clone, PartialEq, Eq)]
+    #[derive(Debug, defmt::Format, Copy, Clone, PartialEq, Eq)]
     enum Message {
         ChangeChannel(u8),
         WantInfo,
-        SendRadioPacket(heapless::Vec<u8, MAX_RADIO_PAYLOAD>)
     }
 
     #[shared]
@@ -212,97 +207,11 @@ mod app {
                     }
                     Message::ChangeChannel(n) => {
                         defmt::info!("Changing Channel to {}", n);
-                        let _ = writeln!(writer, "\nChanging Channel to {}", n);
-                        match n {
-                            11 => {
-                                ctx.local
-                                    .radio
-                                    .set_channel(dongle::ieee802154::Channel::_11);
-                            }
-                            12 => {
-                                ctx.local
-                                    .radio
-                                    .set_channel(dongle::ieee802154::Channel::_12);
-                            }
-                            13 => {
-                                ctx.local
-                                    .radio
-                                    .set_channel(dongle::ieee802154::Channel::_13);
-                            }
-                            14 => {
-                                ctx.local
-                                    .radio
-                                    .set_channel(dongle::ieee802154::Channel::_14);
-                            }
-                            15 => {
-                                ctx.local
-                                    .radio
-                                    .set_channel(dongle::ieee802154::Channel::_15);
-                            }
-                            16 => {
-                                ctx.local
-                                    .radio
-                                    .set_channel(dongle::ieee802154::Channel::_16);
-                            }
-                            17 => {
-                                ctx.local
-                                    .radio
-                                    .set_channel(dongle::ieee802154::Channel::_17);
-                            }
-                            18 => {
-                                ctx.local
-                                    .radio
-                                    .set_channel(dongle::ieee802154::Channel::_18);
-                            }
-                            19 => {
-                                ctx.local
-                                    .radio
-                                    .set_channel(dongle::ieee802154::Channel::_19);
-                            }
-                            20 => {
-                                ctx.local
-                                    .radio
-                                    .set_channel(dongle::ieee802154::Channel::_20);
-                            }
-                            21 => {
-                                ctx.local
-                                    .radio
-                                    .set_channel(dongle::ieee802154::Channel::_21);
-                            }
-                            22 => {
-                                ctx.local
-                                    .radio
-                                    .set_channel(dongle::ieee802154::Channel::_22);
-                            }
-                            23 => {
-                                ctx.local
-                                    .radio
-                                    .set_channel(dongle::ieee802154::Channel::_23);
-                            }
-                            24 => {
-                                ctx.local
-                                    .radio
-                                    .set_channel(dongle::ieee802154::Channel::_24);
-                            }
-                            25 => {
-                                ctx.local
-                                    .radio
-                                    .set_channel(dongle::ieee802154::Channel::_25);
-                            }
-                            26 => {
-                                ctx.local
-                                    .radio
-                                    .set_channel(dongle::ieee802154::Channel::_26);
-                            }
-                            _ => {
-                                defmt::info!("Bad Channel {}!", n);
-                            }
+                        if let Some(new_channel) = channel_from_num(n) {
+                            ctx.local.radio.set_channel(new_channel);
+                            *ctx.local.current_channel = n;
+                            defmt::info!("Channel changed to {=u8}", n);
                         }
-                    }
-                    Message::SendRadioPacket(data) => {
-                        let _ = writeln!(writer, "\nSending radio packet ({} bytes)...", data.len());
-                        ctx.local.timer.delay(5000);
-                        ctx.local.radio.send(ctx.local.packet);
                     }
                 }
             }
@@ -315,10 +224,8 @@ mod app {
             {
                 Ok(crc) => {
                     ctx.local.leds.ld1.toggle();
-      
-                    let _ = writeln!(
-                        writer,
-                        "\nReceived {} bytes (CRC=0x{:04x}, LQI={})",
+                    defmt::info!(
+                        "Received {=u8} bytes (CRC=0x{=u16:04x}, LQI={})",
                         ctx.local.packet.len(),
                         crc,
                         ctx.local.packet.lqi(),
@@ -330,6 +237,13 @@ mod app {
                         packet_slice
                     );
                     *ctx.local.rx_count += 1;
+                    // // reverse the bytes, so olleh -> hello
+                    // ctx.local.packet.reverse();
+                    // // send packet after 5ms (we know the client waits for 10ms and
+                    // // we want to ensure they are definitely in receive mode by the
+                    // // time we send this reply)
+                    // ctx.local.timer.delay(5000);
+                    // ctx.local.radio.send(ctx.local.packet);
                 }
                 Err(dongle::ieee802154::Error::Crc(_)) => {
                     defmt::debug!("RX fail!");
@@ -341,6 +255,9 @@ mod app {
                     let _ = write!(writer, ".");
                 }
             }
+            let mut ping_packet = Packet::new();
+            ping_packet.copy_from_slice(b"ping!");
+            ctx.local.radio.send(&mut ping_packet);
         }
     }
 
@@ -353,72 +270,39 @@ mod app {
         let mut all = (ctx.shared.usb_serial, ctx.shared.usb_hid);
         all.lock(|usb_serial, usb_hid| {
             if ctx.local.usb_device.poll(&mut [usb_serial, usb_hid]) {
-                // Check Serial Input (for '?')
-                let mut serial_buf = [0u8; 8]; // Small buffer for simple commands like '?'
-                match usb_serial.read(&mut serial_buf) {
-                     Ok(n) if n > 0 => {
-                         for b in &serial_buf[0..n] {
-                             if *b == b'?' {
-                                 defmt::debug!("Serial '?' received, queueing WantInfo");
-                                 // Ignore enqueue error (queue full)
-                                 let _ = ctx.local.msg_queue_in.enqueue(Message::WantInfo);
-                             }
-                             // Add other simple serial commands here if needed
-                         }
-                     }
-                     Err(usb_device::UsbError::WouldBlock) => { /* No data, ignore */ }
-                     Err(e) => { defmt::error!("Serial read error: {:?}", e); }
-                     _ => { /* n == 0 */ }
-                }
-
-
-                // Check HID Output Reports (Commands from Host)
-                let mut hid_buf = [0u8; 64];
-                match usb_hid.pull_raw_output(&mut hid_buf) {
-                    Ok(n) if n > 0 => {
-                        defmt::trace!("HID OUT report received, len={}", n);
-                        // We expect n == HID_REPORT_SIZE based on descriptor/host behavior
-                        // But check n >= 1 just in case.
-                        let command = hid_buf[0];
-                        match command {
-                            // --- Handle SendRadioPacket Command ---
-                            CMD_SEND_RADIO => {
-                                // Payload is in hid_buf[1..n]
-                                // Clamp payload length to MAX_RADIO_PAYLOAD and what was received
-                                let payload_len = core::cmp::min(n - 1, MAX_RADIO_PAYLOAD);
-                                if payload_len > 0 {
-                                     // Create Vec from slice
-                                    if let Ok(data_vec) = heapless::Vec::from_slice(&hid_buf[1..][..payload_len]) {
-                                        defmt::debug!("HID CMD_SEND_RADIO received, queueing SendRadioPacket ({} bytes)", data_vec.len());
-                                        if ctx.local.msg_queue_in.enqueue(Message::SendRadioPacket(data_vec)).is_err() {
-                                            defmt::warn!("Message queue full, dropping SendRadioPacket command");
-                                        }
-                                    } else {
-                                        defmt::error!("Failed to create Vec from HID payload slice");
-                                    }
-                                } else {
-                                    defmt::warn!("Received CMD_SEND_RADIO with no payload");
-                                }
-                            }
-                            // --- Handle ChangeChannel Command ---
-                            ch @ CMD_CHANGE_CHANNEL_MIN..=CMD_CHANGE_CHANNEL_MAX => {
-                                defmt::debug!("HID ChangeChannel received, queueing ChangeChannel({})", ch);
-                                if ctx.local.msg_queue_in.enqueue(Message::ChangeChannel(ch)).is_err() {
-                                     defmt::warn!("Message queue full, dropping ChangeChannel command");
-                                }
-                            }
-                            // --- Handle Unknown Command ---
-                            _ => {
-                                defmt::warn!("Received unknown HID command byte: {=u8:#04x}", command);
+                let mut buffer = [0u8; 64];
+                if let Ok(n) = usb_serial.read(&mut buffer) {
+                    if n > 0 {
+                        for b in &buffer[0..n] {
+                            if *b == b'?' {
+                                // User pressed "?" in the terminal
+                                _ = ctx.local.msg_queue_in.enqueue(Message::WantInfo);
                             }
                         }
                     }
-                    Err(usb_device::UsbError::WouldBlock) => { /* No data, ignore */ }
-                    Err(e) => { defmt::error!("HID pull_raw_output error: {:?}", e); }
-                     _ => { /* n == 0 */ }
+                }
+                if let Ok(n) = usb_hid.pull_raw_output(&mut buffer) {
+                    // Linux sends 1 byte, Windows sends 64 (with 63 zero bytes)
+                    if n == 1 || n == 64 {
+                        _ = ctx
+                            .local
+                            .msg_queue_in
+                            .enqueue(Message::ChangeChannel(buffer[0]));
+                    }
                 }
             }
         });
+    }
+
+    fn channel_from_num(n: u8) -> Option<dongle::ieee802154::Channel> {
+        use dongle::ieee802154::Channel::*;
+        match n {
+            11 => Some(_11), 12 => Some(_12), 13 => Some(_13), 14 => Some(_14),
+            15 => Some(_15), 16 => Some(_16), 17 => Some(_17), 18 => Some(_18),
+            19 => Some(_19), 20 => Some(_20), 21 => Some(_21), 22 => Some(_22),
+            23 => Some(_23), 24 => Some(_24), 25 => Some(_25), 26 => Some(_26),
+            _ => None,
+        }
     }
 }
 
@@ -433,5 +317,3 @@ fn panic(info: &core::panic::PanicInfo) -> ! {
         core::hint::spin_loop();
     }
 }
-
-defmt::timestamp!("{=u64:tus}", dongle::uptime_us());

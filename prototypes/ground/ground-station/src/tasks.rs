@@ -89,11 +89,11 @@ pub fn send_hid_command(command_byte: u8, payload: &[u8]) -> color_eyre::Result<
     //     bail!("Payload too large ({} bytes), max is {}", payload.len(), consts::HID_REPORT_SIZE - 1);
     // }
 
-    println!(
-        "Searching for HID device VID={:#06x} PID={:#06x}...",
-        consts::USB_VID_DEMO,
-        consts::USB_PID_DONGLE_LOOPBACK
-    );
+    // println!(
+    //     "Searching for HID device VID={:#06x} PID={:#06x}...",
+    //     consts::USB_VID_DEMO,
+    //     consts::USB_PID_DONGLE_LOOPBACK
+    // );
 
     let api = HidApi::new().expect("Failed to create HidApi instance.");
 
@@ -109,7 +109,7 @@ pub fn send_hid_command(command_byte: u8, payload: &[u8]) -> color_eyre::Result<
             )
         })?;
 
-    println!("Found HID device: {:?}", device_info.product_string());
+    // println!("Found HID device: {:?}", device_info.product_string());
 
     let device = device_info.open_device(&api).expect("Failed to open HID device");
 
@@ -121,8 +121,8 @@ pub fn send_hid_command(command_byte: u8, payload: &[u8]) -> color_eyre::Result<
     report[0] = command_byte;
     report[1..][..payload.len()].copy_from_slice(payload);
 
-    println!("Sending HID report ({} bytes): command={:#04x}, payload_len={}, report[0..8]={:02X?}",
-        report.len(), command_byte, payload.len(), &report[0..core::cmp::min(8, 1 + payload.len())]);
+    // println!("Sending HID report ({} bytes): command={:#04x}, payload_len={}, report[0..8]={:02X?}",
+    //     report.len(), command_byte, payload.len(), &report[0..core::cmp::min(8, 1 + payload.len())]);
 
     // Send the report via write (which usually corresponds to HID Output reports)
     // Note: Some HID implementations might use feature reports instead. Check your descriptor.
@@ -133,10 +133,9 @@ pub fn send_hid_command(command_byte: u8, payload: &[u8]) -> color_eyre::Result<
          bail!("Incomplete HID write: wrote {} bytes, expected {}", bytes_written, report.len());
     }
 
-    println!("HID report sent successfully.");
+    // println!("HID report sent successfully.");
 
-    // Optional: Add a small delay to allow the device to process if needed
-    // thread::sleep(Duration::from_millis(50));
+    thread::sleep(Duration::from_millis(5000));
 
     Ok(())
 }
