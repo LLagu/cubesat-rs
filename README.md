@@ -28,17 +28,15 @@ There are two separate sub-projects:
   - [X] Telemetry send and receive (TM, downlink)
   - [ ] Telecommand send and receive (TC, uplink)   
 
-##### TODO
-- [ ] Modify nRF52840 Dongle's firmware
 
-### Ground station software 
+### Dongle "Ground station"
 ##### Fully completed
 - [X] Testing visualization libraries
   - [X] Visualize the satellite's orbit with `kiss3d`
   - [X] Visualize telemetry with `plotters`
 
 ##### In progress
-- [ ] Integrate Dongle
+- [ ] Modify nRF52840 Dongle's original firmware
 
 ##### TODO
 - [ ] Study and implement TLE parsing and propagation (`sgp4`)
