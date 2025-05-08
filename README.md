@@ -1,6 +1,6 @@
 # cubesat-rs
 <p align="center">
-  <img src="logo/logo.png " width="300" style="display: block; margin: auto;">
+  <img src="images/logo.png " width="300" style="display: block; margin: auto;">
 </p>
 
 
@@ -10,6 +10,10 @@ The focus is on the software side of things, not simulation accuracy.
 There are two separate sub-projects:
 - The embedded software for the nRF52840 DK
 - The firmware for the nRF52840 USB Dongle (the "ground station software")
+
+<p align="center">
+  <img src="images/boards.jpeg" width="300" style="display: block; margin: auto;">
+</p>
 
 
 ## Project status
