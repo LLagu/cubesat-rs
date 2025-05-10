@@ -15,6 +15,8 @@ There are two separate sub-projects:
   <img src="images/boards.jpeg" width="300" style="display: block; margin: auto;">
 </p>
 
+## How to use
+Coming soon.
 
 ## Project status
 ### CubeSat EPS "simulator" with CCSDS-Compliant Telemetry
