@@ -75,25 +75,25 @@ fn main() -> ! {
     }
 }
 
-#![no_std]
-#![no_main]
+// #![no_std]
+// #![no_main]
 
-use core::{fmt::Write, panic::PanicInfo};
-use cortex_m_rt::entry;
-use defmt::info;
+// use core::{fmt::Write, panic::PanicInfo};
+// use cortex_m_rt::entry;
+// use defmt::info;
 
-// Import board support package and radio module
-use dongle as dk;
-use dk::ieee802154::{self, Channel, Packet, TxPower};
+// // Import board support package and radio module
+// use dongle as dk;
+// use dk::ieee802154::{self, Channel, Packet, TxPower};
 
-// LED control for visual feedback
-use dk::Leds;
+// // LED control for visual feedback
+// use dk::Leds;
 
-#[panic_handler]
-fn panic(info: &PanicInfo) -> ! {
-    defmt::error!("Panic occurred: {:?}", defmt::Debug2Format(info));
-    loop {}
-}
+// #[panic_handler]
+// fn panic(info: &PanicInfo) -> ! {
+//     defmt::error!("Panic occurred: {:?}", defmt::Debug2Format(info));
+//     loop {}
+// }
 
 // #[entry]
 // fn main() -> ! {
