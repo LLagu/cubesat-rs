@@ -171,7 +171,7 @@ dependencies = [
  "embedded-hal 1.0.0",
  "grounded",
  "heapless",
- "nrf52840-hal 0.18.0",
+ "nrf52840-hal",
  "panic-probe",
 ]
 
@@ -182,11 +182,9 @@ dependencies = [
  "cortex-m",
  "cortex-m-rt",
  "cortex-m-semihosting",
- "defmt 0.3.100",
  "dongle",
- "embedded-hal 0.2.7",
- "nrf52840-hal 0.16.1",
- "panic-probe",
+ "embedded-hal 1.0.0",
+ "nrf52840-hal",
 ]
 
 [[package]]
@@ -293,26 +291,6 @@ checksum = "8d5439c4ad607c3c23abf66de8c8bf57ba8adcd1f129e699851a6e43935d339d"
 
 [[package]]
 name = "nrf-hal-common"
-version = "0.16.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1ea48ed7f0843fe6ec5aac0c42701e9194adfa1ee82ce6d028d64e5f68542be4"
-dependencies = [
- "cast",
- "cfg-if",
- "cortex-m",
- "embedded-dma",
- "embedded-hal 0.2.7",
- "embedded-storage",
- "fixed",
- "nb 1.1.0",
- "nrf-usbd 0.2.0",
- "nrf52840-pac",
- "rand_core",
- "void",
-]
-
-[[package]]
-name = "nrf-hal-common"
 version = "0.18.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0c134de1f2f0191aed3fc24d3831da8808d1e636b06edf81a5717103095f625d"
@@ -327,22 +305,10 @@ dependencies = [
  "embedded-storage",
  "fixed",
  "nb 1.1.0",
- "nrf-usbd 0.3.0",
+ "nrf-usbd",
  "nrf52840-pac",
  "rand_core",
  "void",
-]
-
-[[package]]
-name = "nrf-usbd"
-version = "0.2.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "66b2907c0b3ec4d264981c1fc5a2321d51c463d5a63d386e573f00e84d5495e6"
-dependencies = [
- "cortex-m",
- "critical-section",
- "usb-device 0.2.9",
- "vcell",
 ]
 
 [[package]]
@@ -353,19 +319,8 @@ checksum = "aedf862f941154442271ae9914777bd1c93f6d2e0dc9db4cafa160e55ffb9085"
 dependencies = [
  "cortex-m",
  "critical-section",
- "usb-device 0.3.2",
+ "usb-device",
  "vcell",
-]
-
-[[package]]
-name = "nrf52840-hal"
-version = "0.16.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "709f85690f7f8d04612a18838785ee9176e1292ce3e53f0c68692b4cf5b4948e"
-dependencies = [
- "embedded-hal 0.2.7",
- "nrf-hal-common 0.16.1",
- "nrf52840-pac",
 ]
 
 [[package]]
@@ -374,7 +329,7 @@ version = "0.18.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "433cfd866da18dfc58376880bdebd092c130444837debc513f44edcd0d6a6558"
 dependencies = [
- "nrf-hal-common 0.18.0",
+ "nrf-hal-common",
  "nrf52840-pac",
 ]
 
@@ -523,12 +478,6 @@ name = "unicode-ident"
 version = "1.0.18"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5a5f39404a5da50712a4c1eecf25e90dd62b613502b7e925fd4e4d19b5c96512"
-
-[[package]]
-name = "usb-device"
-version = "0.2.9"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1f6cc3adc849b5292b4075fc0d5fdcf2f24866e88e336dd27a8943090a520508"
 
 [[package]]
 name = "usb-device"
