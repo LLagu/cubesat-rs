@@ -30,9 +30,8 @@ Coming soon.
 - [ ] Investigate and prototype a simplified CubeSat EPS - Electrical Power System
   - [X] Send mock voltage data
   - [ ] Create EPS module  
-- [ ] Test basic data transmission and reception
+- [X] Test basic data transmission and reception
   - [X] Telemetry send and receive (TM, downlink)
-  - [ ] Telecommand send and receive (TC, uplink)   
 
 
 ### Dongle "Ground station"
@@ -44,6 +43,3 @@ Coming soon.
 ##### In progress
 - [ ] Modify nRF52840 Dongle's original firmware
 
-##### TODO
-- [ ] Study and implement TLE parsing and propagation (`sgp4`)
-- [ ] Implement basic attitude representation and control
