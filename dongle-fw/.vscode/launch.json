@@ -1,21 +1,40 @@
+// {
+//   "version": "0.2.0",
+//   "configurations": [
+//       {
+//           "type": "lldb",
+//           "request": "launch",
+//           "name": "Cargo Build (thumbv7em-none-eabihf)",
+//           "cargo": {
+//               "args": [
+//                   "build",
+//                   "--target",
+//                   "thumbv7em-none-eabihf"
+//               ]
+//           },
+//           "program": "${workspaceFolder}/target/thumbv7em-none-eabihf/debug/dongle-fw",
+//           "args": [],
+//           "cwd": "${workspaceFolder}",
+//           "preLaunchTask": "rust: cargo build --target thumbv7em-none-eabihf"
+//       }
+//   ]
+// }
 {
-  "version": "0.2.0",
-  "configurations": [
-      {
-          "type": "lldb",
-          "request": "launch",
-          "name": "Cargo Build (thumbv7em-none-eabihf)",
-          "cargo": {
-              "args": [
-                  "build",
-                  "--target",
-                  "thumbv7em-none-eabihf"
-              ]
-          },
-          "program": "${workspaceFolder}/target/thumbv7em-none-eabihf/debug/dongle-fw",
-          "args": [],
-          "cwd": "${workspaceFolder}",
-          "preLaunchTask": "rust: cargo build --target thumbv7em-none-eabihf"
-      }
-  ]
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Build & Flash nRF52840",
+            "type": "probe-rs-debug",
+            "request": "launch",
+            "chip": "nRF52840_xxAA",
+            "preLaunchTask": "Build and Flash nRF52840",
+            "coreConfigs": [
+                {
+                    "coreIndex": 0,
+                    "rttEnabled": true,
+                    "programBinary": "${workspaceFolder}/target/thumbv7em-none-eabihf/debug/dongle-fw"
+                }
+            ]
+        }
+    ]
 }
