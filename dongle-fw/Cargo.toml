@@ -7,8 +7,8 @@ version = "0.0.0"
 
 [dependencies]
 consts = { path = "consts" }
-defmt = "0.3.10"
-defmt-rtt = "0.4.1"
+defmt = "1.0.1"
+defmt-rtt = "1.0.0"
 dongle = { path = "dongle-bsp" }
 heapless = { version = "0.8.0", features = ["defmt-03"] }
 rtic = { version = "2.1.2", features = ["thumbv7-backend"] }
@@ -16,3 +16,4 @@ rtic-monotonics = { version = "2.0.3", features = ["cortex-m-systick"] }
 usb-device = { version = "0.3.2", features = ["defmt"] }
 usbd-hid = { version = "0.8.2", features = ["defmt"] }
 usbd-serial = "0.2.2"
+spacepackets = { version = "0.14.0", default-features = false }

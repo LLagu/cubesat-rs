@@ -8,6 +8,7 @@ mod app {
     use core::mem::MaybeUninit;
     use dongle::ieee802154::Packet;
     use rtic_monotonics::systick::prelude::*;
+    use spacepackets::SpHeader;
     const QUEUE_LEN: usize = 8;
 
     systick_monotonic!(Mono, 100);
@@ -231,19 +232,23 @@ mod app {
                         ctx.local.packet.lqi(),
                     );
                     let packet_slice: &[u8] = &*ctx.local.packet;
-                    let _ = writeln!(
-                        writer,
-                        "Packet Content: {:?}", // Standard Debug formatter for uppercase hex
-                        packet_slice
-                    );
+                    // let _ = writeln!(
+                    //     writer,
+                    //     "Packet Content: {:?}",
+                    //     packet_slice
+                    // );
+
+                    match SpHeader::from_be_bytes(packet_slice) {
+                        Ok(header) => {
+                            let _ =writeln!(writer,"Successfully parsed Space Packet Header: {:?}", header);
+                        }
+                        Err(e) => {
+                            let _ =writeln!(writer, "Error parsing Space Packet Header: {:?}", e);
+                        }
+                    }
+
                     *ctx.local.rx_count += 1;
-                    // // reverse the bytes, so olleh -> hello
-                    // ctx.local.packet.reverse();
-                    // // send packet after 5ms (we know the client waits for 10ms and
-                    // // we want to ensure they are definitely in receive mode by the
-                    // // time we send this reply)
-                    // ctx.local.timer.delay(5000);
-                    // ctx.local.radio.send(ctx.local.packet);
+
                 }
                 Err(dongle::ieee802154::Error::Crc(_)) => {
                     defmt::debug!("RX fail!");
